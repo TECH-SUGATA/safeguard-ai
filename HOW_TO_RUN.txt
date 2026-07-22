@@ -1,0 +1,39 @@
+╔══════════════════════════════════════════════════╗
+║         SAFEGUARD AI - HOW TO RUN               ║
+╚══════════════════════════════════════════════════╝
+
+OPTION 1 - EASIEST (Frontend only, no install needed)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Just double-click: safeguard_ai_FIXED.html
+Opens in browser instantly. Done!
+
+OPTION 2 - FULL PROJECT (Frontend + Backend)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+STEP 1: Double-click run.bat (Windows)
+        OR open CMD here and type:
+        python -m uvicorn main:app --reload --port 8000
+
+STEP 2: Open browser → go to:
+        http://localhost:8000/docs
+        (You will see all 8 API endpoints)
+
+STEP 3: Double-click safeguard_ai_FIXED.html
+
+STEP 4: Both are running! Full demo ready.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+API ENDPOINTS:
+  GET  /health                  Health check
+  GET  /api/dashboard/stats     Live metrics
+  POST /api/scam/analyse        Scam detection
+  POST /api/currency/scan       Currency check
+  GET  /api/fraud/rings         Fraud networks
+  GET  /api/fraud/hotspots      Crime hotspots
+  POST /api/fraud/check         Entity check
+  POST /api/citizen/chat        AI chatbot
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+NEED HELP? Cyber Helpline: 1930
+ET AI Hackathon 2.0 - PS6 Digital Public Safety
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

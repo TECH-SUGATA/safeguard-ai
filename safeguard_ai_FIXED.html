@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--gov-blue:#002654;--secondary:#b7102a;--warning:#F39C12;--link-blue:#2196F3;
+--bg:#f8f9fc;--bg-low:#f2f3f6;--bg-cont:#edeef1;--bg-high:#e7e8eb;--bg-highest:#e1e2e5;
+--surface:#ffffff;--surface-alt:#f8f9fc;
+--outline:#75777d;--outline-var:#c5c6cd;
+--on-surface:#191c1e;--on-surface-var:#45474c;
+--error:#ba1a1a;--error-cont:#ffdad6;
+--tertiary-cont:#00984e;
+--primary-fixed:#d7e3fc;--on-primary-fixed:#101c2e;
+--sidebar-bg:#ffffff;--sidebar-border:#c5c6cd;
+--topbar-bg:#ffffff;--topbar-border:#e7e8eb;
+--card-bg:#ffffff;--card-shadow:0 2px 10px rgba(0,0,0,.07);--card-border:rgba(0,0,0,.06);
+--metric-bg:#ffffff;
+--nav-active-bg:#d7e3fc;--nav-active-text:#101c2e;
+--badge-blue-bg:rgba(33,150,243,.1);--badge-blue-text:#1565C0;
+--toggle-track:#c5c6cd;--toggle-knob:#ffffff;
+--input-bg:#ffffff;--input-border:#c5c6cd;
+--progress-bg:#e7e8eb;
+--alert-feed-bg:transparent;
+--scan-area-bg:#f2f3f6;--scan-area-hover:#edeef1;
+}
+.dark{
+--bg:#1a1c1f;--bg-low:#1e2124;--bg-cont:#22252a;--bg-high:#2a2d32;--bg-highest:#30343a;
+--surface:#242729;--surface-alt:#1e2124;
+--outline:#9a9d9f;--outline-var:#42464c;
+--on-surface:#e2e3e6;--on-surface-var:#bbbec4;
+--error:#ffb3b1;--error-cont:rgba(255,179,177,.12);
+--tertiary-cont:#6bfe9c;
+--primary-fixed:#3c4a5e;--on-primary-fixed:#bbc7df;
+--sidebar-bg:#1e2124;--sidebar-border:#2e3236;
+--topbar-bg:#1e2124;--topbar-border:#2e3236;
+--card-bg:#242729;--card-shadow:0 2px 10px rgba(0,0,0,.3);--card-border:rgba(255,255,255,.06);
+--metric-bg:#242729;
+--nav-active-bg:#2e3d50;--nav-active-text:#bbc7df;
+--badge-blue-bg:rgba(33,150,243,.15);--badge-blue-text:#64b5f6;
+--toggle-track:#42464c;
+--input-bg:#1e2124;--input-border:#42464c;
+--progress-bg:#2e3236;
+--scan-area-bg:#1e2124;--scan-area-hover:#22252a;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--on-surface);transition:background .3s,color .3s;overflow:hidden;height:600px}
+.app{display:flex;height:600px;overflow:hidden}
+.sidebar{width:255px;min-width:255px;background:var(--sidebar-bg);border-right:1px solid var(--sidebar-border);display:flex;flex-direction:column;transition:background .3s,border-color .3s}
+.sidebar-profile{padding:14px 16px;border-bottom:1px solid var(--sidebar-border);display:flex;align-items:center;gap:10px;transition:border-color .3s}
+.avatar{width:42px;height:42px;border-radius:50%;background:var(--gov-blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0}
+.profile-name{font-weight:700;font-size:13px;color:var(--gov-blue)}
+.dark .profile-name{color:#bbc7df}
+.profile-sub{font-size:11px;color:var(--on-surface-var)}
+.profile-id{font-size:10px;color:var(--outline);font-family:monospace}
+.nav{flex:1;padding:8px 0;overflow-y:auto}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px 9px 18px;cursor:pointer;font-size:13px;color:var(--on-surface-var);transition:background .15s,color .15s;border-radius:0 22px 22px 0;margin-right:8px}
+.nav-item:hover{background:var(--bg-high)}
+.nav-item.active{background:var(--nav-active-bg);color:var(--nav-active-text);font-weight:600}
+.nav-item .mso{font-size:20px}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:50px;background:var(--topbar-bg);border-bottom:1px solid var(--topbar-border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0;transition:background .3s,border-color .3s}
+.topbar-title{font-size:16px;font-weight:700;color:var(--gov-blue)}
+.dark .topbar-title{color:#bbc7df}
+.topbar-right{display:flex;align-items:center;gap:6px}
+.notif-btn{position:relative;padding:6px;border-radius:50%;cursor:pointer;color:var(--on-surface-var)}
+.notif-dot{position:absolute;top:4px;right:4px;width:7px;height:7px;background:var(--error);border-radius:50%}
+.dark .notif-dot{background:#ff5252}
+.content{flex:1;overflow-y:auto;padding:18px 20px}
+
+/* THEME SWITCHER */
+.theme-switcher{display:flex;align-items:center;gap:4px;background:var(--bg-cont);border:1px solid var(--outline-var);border-radius:24px;padding:3px;transition:background .3s}
+.theme-btn{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;border:none;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;color:var(--on-surface-var);background:transparent;white-space:nowrap;font-family:inherit}
+.theme-btn .mso{font-size:15px}
+.theme-btn.active{background:var(--card-bg);color:var(--on-surface);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.theme-btn.active.light-btn{color:#b7102a}
+.theme-btn.active.dark-btn{color:#bbc7df}
+.theme-btn.active.system-btn{color:var(--gov-blue)}
+.dark .theme-btn.active.system-btn{color:#90caf9}
+
+.mso{font-family:'Material Symbols Outlined';font-variation-settings:'FILL' 0;font-size:20px;line-height:1;display:inline-block}
+.mso-fill{font-variation-settings:'FILL' 1}
+
+.card{background:var(--card-bg);border-radius:10px;box-shadow:var(--card-shadow);border:1px solid var(--card-border);padding:16px;transition:background .3s,box-shadow .3s}
+.card-title{font-size:14px;font-weight:600;color:var(--on-surface);display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.metric-card{background:var(--metric-bg);border-radius:10px;box-shadow:var(--card-shadow);border:1px solid var(--card-border);padding:12px;transition:background .3s}
+.metric-label{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--on-surface-var);margin-bottom:6px}
+.metric-value{font-size:24px;font-weight:700;color:var(--gov-blue);line-height:1}
+.dark .metric-value{color:#bbc7df}
+.metric-value.sm{font-size:15px}
+.dash-grid{display:grid;grid-template-columns:1fr 275px;gap:14px}
+.progress-row{margin-bottom:10px}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--on-surface-var);font-weight:500;margin-bottom:3px}
+.progress-bar{background:var(--progress-bg);border-radius:6px;height:5px;overflow:hidden;transition:background .3s}
+.progress-fill{height:100%;border-radius:6px;transition:background .3s}
+.alert-feed{max-height:185px;overflow-y:auto;display:flex;flex-direction:column;gap:6px}
+.alert-item{padding:8px 10px;border-radius:0 6px 6px 0;display:flex;justify-content:space-between;align-items:flex-start}
+.alert-item.critical{border-left:3px solid var(--secondary);background:rgba(183,16,42,.06)}
+.dark .alert-item.critical{background:rgba(183,16,42,.12)}
+.alert-item.warning{border-left:3px solid var(--warning);background:rgba(243,156,18,.06)}
+.dark .alert-item.warning{background:rgba(243,156,18,.1)}
+.alert-item.resolved{border-left:3px solid #00984e;background:rgba(0,152,78,.05)}
+.dark .alert-item.resolved{background:rgba(107,254,156,.07)}
+.alert-type{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:2px}
+.alert-type.critical{color:var(--secondary)}
+.dark .alert-type.critical{color:#ff8a80}
+.alert-type.warning{color:var(--warning)}
+.dark .alert-type.warning{color:#ffd54f}
+.alert-type.resolved{color:#00984e}
+.dark .alert-type.resolved{color:#6bfe9c}
+.alert-text{font-size:11px;color:var(--on-surface-var)}
+.alert-time{font-size:10px;color:var(--outline);white-space:nowrap;margin-left:6px}
+.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.qa-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;background:var(--card-bg);border-radius:10px;box-shadow:var(--card-shadow);border:1px solid var(--card-border);cursor:pointer;gap:5px;transition:background .2s}
+.qa-btn:hover{background:var(--bg-low)}
+.qa-btn .mso{color:var(--gov-blue);font-size:22px}
+.dark .qa-btn .mso{color:#90caf9}
+.qa-btn span:last-child{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--on-surface-var)}
+.section-header{font-size:20px;font-weight:700;color:var(--gov-blue);margin-bottom:3px}
+.dark .section-header{color:#bbc7df}
+.section-sub{font-size:13px;color:var(--on-surface-var);margin-bottom:14px}
+.page{display:none;animation:fadeIn .2s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.settings-section{background:var(--card-bg);border-radius:10px;box-shadow:var(--card-shadow);border:1px solid var(--card-border);padding:16px;margin-bottom:14px;transition:background .3s}
+.settings-section-title{font-size:14px;font-weight:600;color:var(--on-surface);display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.toggle-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--outline-var)}
+.toggle-row:last-child{border-bottom:none}
+.toggle-info h4{font-size:13px;font-weight:500;color:var(--on-surface)}
+.toggle-info p{font-size:11px;color:var(--on-surface-var)}
+.toggle{width:38px;height:21px;background:var(--toggle-track);border-radius:11px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+.toggle.on{background:var(--gov-blue)}
+.dark .toggle.on{background:#4a7ab5}
+.toggle-knob{width:17px;height:17px;border-radius:50%;background:var(--toggle-knob);position:absolute;top:2px;left:2px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle.on .toggle-knob{transform:translateX(17px)}
+.danger-zone{background:rgba(186,26,26,.06);border:1px solid rgba(186,26,26,.3);border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between}
+.dark .danger-zone{background:rgba(255,179,177,.08);border-color:rgba(255,179,177,.3)}
+.form-label{font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--on-surface-var);margin-bottom:4px}
+.form-input{width:100%;padding:8px 10px;border-radius:7px;border:1px solid var(--input-border);font-size:13px;font-family:inherit;outline:none;color:var(--on-surface);background:var(--input-bg);transition:border-color .2s,background .3s,color .3s}
+.form-input:focus{border-color:var(--gov-blue)}
+.form-input:disabled{background:var(--bg-cont);color:var(--outline);cursor:not-allowed}
+.btn-primary{background:var(--gov-blue);color:white;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;letter-spacing:.04em;cursor:pointer;transition:opacity .15s;font-family:inherit}
+.btn-primary:hover{opacity:.88}
+.btn-outline-err{background:transparent;color:var(--error);border:1px solid var(--error);border-radius:7px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s}
+.dark .btn-outline-err{color:#ff8a80;border-color:#ff8a80}
+.btn-outline-err:hover{background:rgba(186,26,26,.08)}
+
+/* Settings theme section highlight */
+.theme-section-card{background:var(--card-bg);border-radius:10px;box-shadow:var(--card-shadow);border:1px solid var(--card-border);padding:16px;margin-bottom:14px;transition:background .3s}
+.theme-label{font-size:12px;color:var(--on-surface-var);margin-top:8px;text-align:center}
+.theme-preview-row{display:flex;gap:10px;margin-top:12px}
+.theme-preview{flex:1;border-radius:8px;overflow:hidden;border:2px solid transparent;cursor:pointer;transition:border-color .2s}
+.theme-preview.selected{border-color:var(--gov-blue)}
+.dark .theme-preview.selected{border-color:#90caf9}
+.tp-top{height:22px;display:flex;align-items:center;padding:0 8px;gap:5px}
+.tp-dot{width:6px;height:6px;border-radius:50%}
+.tp-content{padding:8px;display:flex;flex-direction:column;gap:4px}
+.tp-line{height:4px;border-radius:2px}
+.tp-line.w60{width:60%}
+.tp-line.w40{width:40%}
+.tp-line.w80{width:80%}
+
+#toast{position:fixed;bottom:14px;right:14px;background:var(--gov-blue);color:white;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:500;box-shadow:0 4px 16px rgba(0,0,0,.25);z-index:999;display:none;align-items:center;gap:7px;max-width:240px}
+.dark #toast{background:#1e3a5f;color:#e2e3e6}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+<aside class="sidebar">
+<div class="sidebar-profile">
+<div class="avatar">OS</div>
+<div>
+<div class="profile-name">Officer Singh</div>
+<div class="profile-sub">Public Safety Division</div>
+<div class="profile-id">ID: 992834</div>
+</div>
+</div>
+<nav class="nav">
+<div class="nav-item active" onclick="navigate('dashboard')" id="nav-dashboard"><span class="mso mso-fill">dashboard</span>Dashboard</div>
+<div class="nav-item" onclick="navigate('currency')" id="nav-currency"><span class="mso">qr_code_scanner</span>Currency</div>
+<div class="nav-item" onclick="navigate('scam')" id="nav-scam"><span class="mso">gpp_bad</span>Scam Detector</div>
+<div class="nav-item" onclick="navigate('fraud')" id="nav-fraud"><span class="mso">psychology</span>Fraud Network</div>
+<div class="nav-item" onclick="navigate('shield')" id="nav-shield"><span class="mso">shield</span>Citizen Shield</div>
+<div class="nav-item" onclick="navigate('intel')" id="nav-intel"><span class="mso">menu_book</span>Intelligence</div>
+<div class="nav-item" onclick="navigate('settings')" id="nav-settings"><span class="mso">settings</span>Settings</div>
+</nav>
+</aside>
+
+<div class="main">
+<div class="topbar">
+<div class="topbar-title" id="topbar-title">SafeGuard AI — Dashboard</div>
+<div class="topbar-right">
+<!-- THEME SWITCHER IN TOPBAR -->
+<div class="theme-switcher" id="topbar-theme-switcher">
+<button class="theme-btn light-btn active" id="tb-light" onclick="setTheme('light')"><span class="mso" style="font-size:15px">light_mode</span>Light</button>
+<button class="theme-btn dark-btn" id="tb-dark" onclick="setTheme('dark')"><span class="mso" style="font-size:15px">dark_mode</span>Dark</button>
+<button class="theme-btn system-btn" id="tb-system" onclick="setTheme('system')"><span class="mso" style="font-size:15px">devices</span>Auto</button>
+</div>
+<div class="notif-btn"><span class="mso">notifications</span><span class="notif-dot"></span></div>
+</div>
+</div>
+
+<div class="content" id="content-area">
+
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+<div class="section-header">Good morning, Officer Singh</div>
+<div class="section-sub">Here is your daily threat intelligence summary.</div>
+<div class="metrics-grid">
+<div class="metric-card"><div class="metric-label"><span class="mso" style="font-size:14px;color:#b7102a">gpp_bad</span>Scams Blocked</div><div class="metric-value">1,247</div></div>
+<div class="metric-card"><div class="metric-label"><span class="mso" style="font-size:14px;color:#00984e">payments</span>Fraud Prevented</div><div class="metric-value sm">₹4.2 Crore</div></div>
+<div class="metric-card"><div class="metric-label"><span class="mso" style="font-size:14px;color:#2196F3">analytics</span>Accuracy</div><div class="metric-value">98.3%</div></div>
+<div class="metric-card"><div class="metric-label"><span class="mso" style="font-size:14px;color:#F39C12">hub</span>Active Networks</div><div class="metric-value">14</div></div>
+</div>
+<div class="dash-grid">
+<div style="display:flex;flex-direction:column;gap:12px">
+<div class="card">
+<div class="card-title"><span class="mso" style="font-size:17px;color:var(--gov-blue)">monitoring</span>Threat Breakdown</div>
+<div class="progress-row"><div class="progress-label"><span>Digital Arrest</span><span style="font-weight:700">78%</span></div><div class="progress-bar"><div class="progress-fill" style="width:78%;background:#b7102a"></div></div></div>
+<div class="progress-row"><div class="progress-label"><span>UPI Fraud</span><span style="font-weight:700">60%</span></div><div class="progress-bar"><div class="progress-fill" style="width:60%;background:#F39C12"></div></div></div>
+<div class="progress-row"><div class="progress-label"><span>Identity Theft</span><span style="font-weight:700">35%</span></div><div class="progress-bar"><div class="progress-fill" style="width:35%;background:var(--gov-blue)"></div></div></div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div class="card" style="padding:12px">
+<div class="card-title" style="font-size:13px;color:#b7102a;margin-bottom:8px"><span class="mso" style="font-size:16px">warning</span>Live Alerts</div>
+<div class="alert-feed">
+<div class="alert-item critical"><div><div class="alert-type critical">Critical</div><div class="alert-text">Suspicious high-volume UPI transactions in Sector 4.</div></div><div class="alert-time">Now</div></div>
+<div class="alert-item warning"><div><div class="alert-type warning">Warning</div><div class="alert-text">New phishing domain mirroring state banking portal.</div></div><div class="alert-time">10m</div></div>
+<div class="alert-item resolved"><div><div class="alert-type resolved">Resolved</div><div class="alert-text">Botnet activity isolated from municipal servers.</div></div><div class="alert-time">1h</div></div>
+<div class="alert-item critical"><div><div class="alert-type critical">Critical</div><div class="alert-text">Digital Arrest scams targeting senior citizens.</div></div><div class="alert-time">2h</div></div>
+</div>
+</div>
+<div class="quick-actions">
+<div class="qa-btn" onclick="navigate('scam')"><span class="mso">record_voice_over</span><span>Analyse Call</span></div>
+<div class="qa-btn" onclick="navigate('currency')"><span class="mso">qr_code_scanner</span><span>Scan Currency</span></div>
+<div class="qa-btn" onclick="navigate('intel')"><span class="mso" style="color:#b7102a!important">report</span><span>Report Fraud</span></div>
+<div class="qa-btn" onclick="navigate('fraud')"><span class="mso">hub</span><span>Check Network</span></div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- SETTINGS (focused on theme) -->
+<div class="page" id="page-settings">
+<div class="section-header">Settings</div>
+<div class="section-sub">Manage your preferences and system configurations.</div>
+
+<!-- THEME SECTION - MAIN FEATURE -->
+<div class="theme-section-card">
+<div class="settings-section-title"><span class="mso">palette</span>Appearance & Theme</div>
+
+<!-- Big theme switcher -->
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+<div>
+<div style="font-size:13px;font-weight:500;color:var(--on-surface);margin-bottom:2px">Color scheme</div>
+<div style="font-size:11px;color:var(--on-surface-var)">Choose how SafeGuard AI looks to you.</div>
+</div>
+<div class="theme-switcher" id="settings-theme-switcher">
+<button class="theme-btn light-btn active" id="st-light" onclick="setTheme('light')"><span class="mso" style="font-size:15px">light_mode</span>Light</button>
+<button class="theme-btn dark-btn" id="st-dark" onclick="setTheme('dark')"><span class="mso" style="font-size:15px">dark_mode</span>Dark</button>
+<button class="theme-btn system-btn" id="st-system" onclick="setTheme('system')"><span class="mso" style="font-size:15px">devices</span>Auto</button>
+</div>
+</div>
+
+<!-- Visual previews -->
+<div class="theme-preview-row">
+<div class="theme-preview selected" id="prev-light" onclick="setTheme('light')">
+<div class="tp-top" style="background:#ffffff;border-bottom:1px solid #e7e8eb"><div class="tp-dot" style="background:#002654"></div><div class="tp-dot" style="background:#b7102a"></div><div class="tp-dot" style="background:#F39C12"></div></div>
+<div class="tp-content" style="background:#f8f9fc">
+<div class="tp-line w80" style="background:#002654;opacity:.7"></div>
+<div class="tp-line w60" style="background:#c5c6cd"></div>
+<div class="tp-line w40" style="background:#e7e8eb"></div>
+</div>
+<div class="theme-label" style="background:#ffffff;padding:4px 0;color:#45474c;font-size:11px;font-weight:600;border-top:1px solid #e7e8eb">☀ Light</div>
+</div>
+<div class="theme-preview" id="prev-dark" onclick="setTheme('dark')">
+<div class="tp-top" style="background:#1e2124;border-bottom:1px solid #2e3236"><div class="tp-dot" style="background:#90caf9"></div><div class="tp-dot" style="background:#ff8a80"></div><div class="tp-dot" style="background:#ffd54f"></div></div>
+<div class="tp-content" style="background:#1a1c1f">
+<div class="tp-line w80" style="background:#bbc7df;opacity:.8"></div>
+<div class="tp-line w60" style="background:#42464c"></div>
+<div class="tp-line w40" style="background:#2a2d32"></div>
+</div>
+<div class="theme-label" style="background:#1e2124;padding:4px 0;color:#9a9d9f;font-size:11px;font-weight:600;border-top:1px solid #2e3236">🌙 Dark</div>
+</div>
+<div class="theme-preview" id="prev-system" onclick="setTheme('system')">
+<div class="tp-top" style="background:linear-gradient(to right,#ffffff 50%,#1e2124 50%);border-bottom:1px solid #c5c6cd"></div>
+<div class="tp-content" style="background:linear-gradient(to right,#f8f9fc 50%,#1a1c1f 50%)">
+<div class="tp-line w80" style="background:linear-gradient(to right,#002654 50%,#bbc7df 50%);opacity:.8"></div>
+<div class="tp-line w60" style="background:linear-gradient(to right,#c5c6cd 50%,#42464c 50%)"></div>
+<div class="tp-line w40" style="background:linear-gradient(to right,#e7e8eb 50%,#2a2d32 50%)"></div>
+</div>
+<div class="theme-label" style="background:linear-gradient(to right,#fff 50%,#1e2124 50%);padding:4px 0;font-size:11px;font-weight:600;border-top:1px solid #c5c6cd;color:#75777d">⚙ Auto</div>
+</div>
+</div>
+</div>
+
+<div class="settings-section">
+<div class="settings-section-title"><span class="mso">person</span>Profile Information</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div><div class="form-label">Full Name</div><input class="form-input" type="text" value="Officer Singh"/></div>
+<div><div class="form-label">Badge ID</div><input class="form-input" type="text" value="992834" disabled/></div>
+<div style="grid-column:1/-1"><div class="form-label">Department</div><input class="form-input" type="text" value="Public Safety Division"/></div>
+</div>
+</div>
+
+<div class="settings-section">
+<div class="settings-section-title"><span class="mso">notifications</span>Notifications</div>
+<div class="toggle-row">
+<div class="toggle-info"><h4>Alert Sounds</h4><p>Play audio on critical threat alerts.</p></div>
+<div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+</div>
+<div class="toggle-row">
+<div class="toggle-info"><h4>Push Notifications</h4><p>Receive alerts on your device.</p></div>
+<div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+</div>
+</div>
+
+<div class="danger-zone">
+<div>
+<div style="font-size:13px;font-weight:600;color:var(--error);margin-bottom:2px">Danger Zone</div>
+<div style="font-size:12px;color:var(--on-surface)">End your current session across all devices.</div>
+</div>
+<button class="btn-outline-err" onclick="showToast('Session ended.')">Logout</button>
+</div>
+<button class="btn-primary" style="margin-top:14px" onclick="showToast('Settings saved.')">Save Changes</button>
+</div>
+
+<!-- CURRENCY -->
+<div class="page" id="page-currency">
+<div class="section-header">Counterfeit Currency Detection</div>
+<div class="section-sub">AI-powered spectral analysis for Indian Rupee notes.</div>
+<div style="display:grid;grid-template-columns:1fr 250px;gap:14px">
+<div style="display:flex;flex-direction:column;gap:12px">
+<div class="card">
+<div class="card-title">Select Denomination</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+<div style="padding:8px;border-radius:7px;border:2px solid var(--outline-var);cursor:pointer;font-size:16px;font-weight:600;text-align:center;color:var(--on-surface-var);background:var(--card-bg);transition:all .15s" onclick="selectDenom(this)">₹100</div>
+<div style="padding:8px;border-radius:7px;border:2px solid #b7102a;background:rgba(183,16,42,.06);color:#b7102a;cursor:pointer;font-size:16px;font-weight:600;text-align:center;transition:all .15s" onclick="selectDenom(this)">₹500</div>
+<div style="padding:8px;border-radius:7px;border:2px solid var(--outline-var);cursor:pointer;font-size:16px;font-weight:600;text-align:center;color:var(--on-surface-var);background:var(--card-bg);transition:all .15s" onclick="selectDenom(this)">₹2000</div>
+</div>
+</div>
+<div class="card">
+<div class="card-title">Camera / Image Upload</div>
+<div style="border:2px dashed var(--outline-var);border-radius:9px;background:var(--scan-area-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 14px;cursor:pointer;gap:8px;transition:background .15s" onclick="showToast('Scanning note...')">
+<div style="width:50px;height:50px;border-radius:50%;background:var(--primary-fixed);display:flex;align-items:center;justify-content:center"><span class="mso mso-fill" style="color:var(--on-primary-fixed);font-size:26px">photo_camera</span></div>
+<div style="font-size:13px;font-weight:600;color:var(--gov-blue)">Tap to scan or upload</div>
+<div style="font-size:11px;color:var(--on-surface-var);text-align:center">Position the banknote within the frame. Spectral sensors will initialize automatically.</div>
+</div>
+</div>
+</div>
+<div class="card" style="display:flex;flex-direction:column;gap:8px">
+<div class="card-title" style="justify-content:space-between;font-size:13px">Security Analysis<span style="font-size:10px;font-weight:600;background:rgba(33,150,243,.12);color:#1565C0;padding:2px 7px;border-radius:10px;letter-spacing:.04em">ANALYZING</span></div>
+<div style="display:flex;flex-direction:column;gap:4px">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 8px;border-radius:6px"><div style="display:flex;gap:8px"><span class="mso" style="color:#00984e;font-size:17px">check_circle</span><div><div style="font-size:12px;font-weight:500;color:var(--on-surface)">Microprint</div><div style="font-size:10px;color:var(--on-surface-var)">RBI lettering valid</div></div></div><span style="font-size:10px;font-weight:700;padding:2px 5px;border-radius:4px;background:rgba(0,152,78,.1);color:#00984e">PASS</span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 8px;border-radius:6px"><div style="display:flex;gap:8px"><span class="mso" style="color:#00984e;font-size:17px">check_circle</span><div><div style="font-size:12px;font-weight:500;color:var(--on-surface)">Watermark</div><div style="font-size:10px;color:var(--on-surface-var)">Gandhi portrait OK</div></div></div><span style="font-size:10px;font-weight:700;padding:2px 5px;border-radius:4px;background:rgba(0,152,78,.1);color:#00984e">PASS</span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 8px;border-radius:6px;background:rgba(186,26,26,.07);border:1px solid rgba(186,26,26,.2)"><div style="display:flex;gap:8px"><span class="mso" style="color:var(--error);font-size:17px">cancel</span><div><div style="font-size:12px;font-weight:500;color:var(--error)">OVI Check</div><div style="font-size:10px;color:var(--on-surface-var)">Color shift inconsistent</div></div></div><span style="font-size:10px;font-weight:700;padding:2px 5px;border-radius:4px;background:var(--error-cont);color:var(--error)">FAIL</span></div>
+</div>
+<div style="border-radius:9px;padding:12px;display:flex;align-items:center;justify-content:space-between;border:2px solid var(--error);background:var(--error-cont);margin-top:4px">
+<div style="display:flex;align-items:center;gap:9px">
+<div style="width:36px;height:36px;border-radius:50%;background:var(--error);display:flex;align-items:center;justify-content:center"><span class="mso mso-fill" style="color:white;font-size:20px">warning</span></div>
+<div><div style="font-size:13px;font-weight:700;color:var(--error)">COUNTERFEIT DETECTED</div><div style="font-size:11px;color:var(--error);opacity:.8">OVI check failed.</div></div>
+</div>
+<button onclick="showToast('Report logged.')" style="background:var(--error);color:white;border:none;border-radius:7px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.04em;text-transform:uppercase;font-family:inherit">REPORT</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- SCAM -->
+<div class="page" id="page-scam">
+<div class="section-header">Scam Detector</div>
+<div class="section-sub">Paste transcripts — AI detects fraud signatures in real time.</div>
+<div style="display:grid;grid-template-columns:1fr 250px;gap:14px">
+<div class="card" style="display:flex;flex-direction:column;gap:10px">
+<div class="card-title"><span class="mso" style="font-size:17px">psychology</span>Input Analysis Target</div>
+<textarea style="width:100%;min-height:160px;border:1px solid var(--input-border);border-radius:7px;padding:10px;font-size:12px;font-family:inherit;resize:none;outline:none;color:var(--on-surface);background:var(--input-bg);transition:all .3s" placeholder="Paste suspicious call transcript, SMS, or email here..."></textarea>
+<button onclick="showToast('Analysis complete — threat level: HIGH.')" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;background:#b7102a;color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit"><span class="mso" style="font-size:17px;color:white">radar</span>Analyse Now</button>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div class="card" style="border-top:3px solid var(--error)">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+<div style="font-size:13px;font-weight:600;color:var(--on-surface)">Threat Assessment</div>
+<span style="font-size:10px;font-weight:700;color:var(--error);background:rgba(186,26,26,.1);border:1px solid rgba(186,26,26,.2);border-radius:12px;padding:2px 8px;letter-spacing:.04em;display:flex;align-items:center;gap:3px"><span class="mso" style="font-size:12px">warning</span>Critical</span>
+</div>
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+<div style="position:relative;width:70px;height:70px;flex-shrink:0">
+<svg width="70" height="70" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="var(--progress-bg)" stroke-width="8"/><circle cx="50" cy="50" r="40" fill="none" stroke="#ba1a1a" stroke-width="8" stroke-dasharray="251" stroke-dashoffset="20" transform="rotate(-90 50 50)"/></svg>
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><span style="font-size:20px;font-weight:700;color:var(--error);line-height:1">92</span><span style="font-size:10px;color:var(--on-surface-var)">%</span></div>
+</div>
+<div><div style="font-size:14px;font-weight:700;color:var(--error);margin-bottom:2px">HIGH RISK</div><div style="font-size:11px;color:var(--on-surface-var)">Likely Digital Arrest Scam</div></div>
+</div>
+<div style="background:var(--bg-low);border-radius:7px;padding:8px;margin-bottom:10px">
+<div style="font-size:10px;letter-spacing:.05em;color:var(--outline);text-transform:uppercase;margin-bottom:5px">Matched Signatures</div>
+<div style="display:flex;align-items:flex-start;gap:5px;margin-bottom:4px;font-size:11px;color:var(--on-surface)"><span class="mso" style="font-size:15px;color:var(--error)">check_circle</span>Urgency / threat of arrest</div>
+<div style="display:flex;align-items:flex-start;gap:5px;margin-bottom:4px;font-size:11px;color:var(--on-surface)"><span class="mso" style="font-size:15px;color:var(--error)">check_circle</span>Demand for video call</div>
+<div style="display:flex;align-items:flex-start;gap:5px;font-size:11px;color:var(--on-surface)"><span class="mso" style="font-size:15px;color:#F39C12">error</span>CBI impersonation</div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:7px">
+<button onclick="showToast('Telecom provider alerted.')" style="display:flex;align-items:center;justify-content:center;gap:5px;padding:9px;background:var(--gov-blue);color:white;border:none;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit"><span class="mso" style="font-size:16px;color:white">cell_tower</span>Alert Telecom</button>
+<button onclick="showToast('MHA notified.')" style="display:flex;align-items:center;justify-content:center;gap:5px;padding:9px;background:var(--card-bg);color:var(--gov-blue);border:1px solid var(--gov-blue);border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit"><span class="mso" style="font-size:16px">policy</span>Notify MHA</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- FRAUD -->
+<div class="page" id="page-fraud">
+<div class="section-header">Fraud Network Map</div>
+<div class="section-sub">Real-time visualization of active financial fraud syndicates.</div>
+<div style="display:grid;grid-template-columns:1fr 240px;gap:14px">
+<div>
+<div class="card" style="padding:0;overflow:hidden">
+<div style="padding:10px 14px;border-bottom:1px solid var(--outline-var);display:flex;justify-content:space-between;align-items:center">
+<div style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--gov-blue)"><span class="mso" style="font-size:17px">radar</span>Live Geographic Feed</div>
+<div style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:#b7102a;background:rgba(183,16,42,.08);padding:3px 8px;border-radius:10px"><div style="width:7px;height:7px;border-radius:50%;background:#b7102a;animation:pulse 2s infinite"></div>Live</div>
+</div>
+<div style="height:180px;background:var(--bg-cont);position:relative">
+<svg width="100%" height="100%" style="position:absolute;inset:0;opacity:.1"><line x1="0" y1="33%" x2="100%" y2="33%" stroke="var(--on-surface)" stroke-width="0.5"/><line x1="0" y1="66%" x2="100%" y2="66%" stroke="var(--on-surface)" stroke-width="0.5"/><line x1="33%" y1="0" x2="33%" y2="100%" stroke="var(--on-surface)" stroke-width="0.5"/><line x1="66%" y1="0" x2="66%" y2="100%" stroke="var(--on-surface)" stroke-width="0.5"/></svg>
+<div style="position:absolute;top:28%;left:44%"><div style="width:12px;height:12px;border-radius:50%;background:#b7102a;box-shadow:0 0 0 8px rgba(183,16,42,.18);animation:pulse 2s infinite"></div></div>
+<div style="position:absolute;top:58%;left:27%"><div style="width:12px;height:12px;border-radius:50%;background:#F39C12;box-shadow:0 0 0 8px rgba(243,156,18,.18);animation:pulse 2s infinite .5s"></div></div>
+<div style="position:absolute;top:50%;left:70%"><div style="width:12px;height:12px;border-radius:50%;background:#b7102a;box-shadow:0 0 0 8px rgba(183,16,42,.18);animation:pulse 2s infinite 1s"></div></div>
+<div style="position:absolute;top:28%;left:46%;background:var(--card-bg);padding:3px 7px;border-radius:5px;box-shadow:var(--card-shadow);font-size:10px;pointer-events:none"><div style="font-weight:700;color:var(--gov-blue)">Delhi Hub</div><div style="color:#b7102a">High Activity</div></div>
+</div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="font-size:14px;font-weight:700;color:var(--gov-blue)">Active Rings</div>
+<div class="card" style="padding:12px;cursor:pointer;position:relative;overflow:hidden" onclick="showToast('Loading #FR-8892-DL...')">
+<div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:#b7102a;border-radius:3px 0 0 3px"></div>
+<div style="display:flex;justify-content:space-between;margin-bottom:8px"><div><div style="font-size:10px;color:var(--outline);letter-spacing:.04em;text-transform:uppercase;margin-bottom:1px">Ring ID</div><div style="font-size:12px;font-family:monospace;color:var(--gov-blue)">#FR-8892-DL</div></div><span style="font-size:10px;font-weight:600;color:#b7102a;background:rgba(183,16,42,.1);border:1px solid rgba(183,16,42,.2);border-radius:10px;padding:2px 7px">Critical</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px"><div style="background:var(--bg-low);border-radius:6px;padding:6px"><div style="font-size:10px;color:var(--outline);text-transform:uppercase">Nodes</div><div style="font-size:13px;font-weight:600;color:var(--on-surface)">142</div></div><div style="background:var(--bg-low);border-radius:6px;padding:6px"><div style="font-size:10px;color:var(--outline);text-transform:uppercase">Est. Loss</div><div style="font-size:13px;font-weight:600;color:#b7102a">₹4,50,000</div></div></div>
+<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--outline);margin-bottom:3px"><span>AI Confidence</span><span style="font-weight:700;color:var(--gov-blue)">94%</span></div>
+<div class="progress-bar"><div class="progress-fill" style="width:94%;background:var(--gov-blue)"></div></div>
+</div>
+<div class="card" style="padding:12px;cursor:pointer;position:relative;overflow:hidden" onclick="showToast('Loading #FR-9104-MH...')">
+<div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:#F39C12;border-radius:3px 0 0 3px"></div>
+<div style="display:flex;justify-content:space-between;margin-bottom:8px"><div><div style="font-size:10px;color:var(--outline);letter-spacing:.04em;text-transform:uppercase;margin-bottom:1px">Ring ID</div><div style="font-size:12px;font-family:monospace;color:var(--gov-blue)">#FR-9104-MH</div></div><span style="font-size:10px;font-weight:600;color:#F39C12;background:rgba(243,156,18,.1);border:1px solid rgba(243,156,18,.2);border-radius:10px;padding:2px 7px">Elevated</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px"><div style="background:var(--bg-low);border-radius:6px;padding:6px"><div style="font-size:10px;color:var(--outline);text-transform:uppercase">Nodes</div><div style="font-size:13px;font-weight:600;color:var(--on-surface)">87</div></div><div style="background:var(--bg-low);border-radius:6px;padding:6px"><div style="font-size:10px;color:var(--outline);text-transform:uppercase">Est. Loss</div><div style="font-size:13px;font-weight:600;color:var(--on-surface)">₹2,10,000</div></div></div>
+<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--outline);margin-bottom:3px"><span>AI Confidence</span><span style="font-weight:700;color:var(--gov-blue)">82%</span></div>
+<div class="progress-bar"><div class="progress-fill" style="width:82%;background:var(--gov-blue)"></div></div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- SHIELD -->
+<div class="page" id="page-shield">
+<div style="background:var(--error);color:white;padding:5px;text-align:center;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:7px;margin-bottom:10px"><span class="mso" style="font-size:14px;color:white">warning</span>Cyber Helpline: 1930</div>
+<div style="display:flex;flex-direction:column;gap:12px;margin-bottom:10px" id="chat-messages">
+<div style="display:flex;gap:8px">
+<div style="width:28px;height:28px;border-radius:50%;background:var(--gov-blue);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span class="mso mso-fill" style="font-size:13px;color:white">security</span></div>
+<div><div style="font-size:10px;color:var(--outline);margin-bottom:2px">SafeGuard AI • 10:42 AM</div><div style="background:var(--gov-blue);color:white;padding:9px 11px;border-radius:13px 13px 13px 2px;font-size:12px;line-height:1.5;max-width:85%">Hello. I am the Citizen Shield AI assistant. How can I help you today?</div></div>
+</div>
+<div style="display:flex;gap:8px;flex-direction:row-reverse">
+<div style="width:28px;height:28px;border-radius:50%;background:var(--bg-high);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span class="mso" style="font-size:15px;color:var(--on-surface-var)">person</span></div>
+<div style="display:flex;flex-direction:column;align-items:flex-end"><div style="font-size:10px;color:var(--outline);margin-bottom:2px">You • 10:45 AM</div><div style="background:#b7102a;color:white;padding:9px 11px;border-radius:13px 13px 2px 13px;font-size:12px;line-height:1.5">I received a call claiming to be from the police asking for my bank details.</div></div>
+</div>
+<div style="display:flex;gap:8px">
+<div style="width:28px;height:28px;border-radius:50%;background:var(--gov-blue);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span class="mso mso-fill" style="font-size:13px;color:white">security</span></div>
+<div><div style="font-size:10px;color:var(--outline);margin-bottom:2px">SafeGuard AI • 10:45 AM</div><div style="background:var(--gov-blue);color:white;padding:9px 11px;border-radius:13px 13px 13px 2px;font-size:12px;line-height:1.5;max-width:85%"><strong>Do NOT share any bank details.</strong> This is a scam. Disconnect immediately and call 1930.</div></div>
+</div>
+</div>
+<div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px">
+<div onclick="sendMsg('Report a Number')" style="padding:5px 11px;border-radius:16px;border:1px solid rgba(0,38,84,.2);color:var(--gov-blue);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:4px;background:var(--card-bg);flex-shrink:0;transition:all .15s"><span class="mso" style="font-size:13px">call_missed_outgoing</span>Report Number</div>
+<div onclick="sendMsg('Verify Identity')" style="padding:5px 11px;border-radius:16px;border:1px solid rgba(0,38,84,.2);color:var(--gov-blue);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:4px;background:var(--card-bg);flex-shrink:0"><span class="mso" style="font-size:13px">fact_check</span>Verify Identity</div>
+<div onclick="sendMsg('Check Suspicious Link')" style="padding:5px 11px;border-radius:16px;border:1px solid rgba(0,38,84,.2);color:var(--gov-blue);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:4px;background:var(--card-bg);flex-shrink:0"><span class="mso" style="font-size:13px">link</span>Suspicious Link</div>
+</div>
+<div style="display:flex;align-items:center;gap:8px">
+<span class="mso" style="color:var(--outline);cursor:pointer">mic</span>
+<input id="chat-input" style="flex:1;padding:8px 13px;border-radius:20px;border:1px solid var(--input-border);font-size:12px;outline:none;font-family:inherit;background:var(--input-bg);color:var(--on-surface)" placeholder="Type your message..." onkeydown="if(event.key==='Enter')sendMsg()"/>
+<button onclick="sendMsg()" style="width:32px;height:32px;border-radius:50%;background:var(--gov-blue);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer"><span class="mso mso-fill" style="font-size:15px;color:white">send</span></button>
+</div>
+</div>
+
+<!-- INTEL -->
+<div class="page" id="page-intel">
+<div class="section-header">Intelligence Reports</div>
+<div class="section-sub">Access and analyze aggregated threat intelligence.</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+<div class="card" style="cursor:pointer;display:flex;flex-direction:column;gap:9px" onclick="">
+<div style="display:flex;justify-content:space-between"><div style="width:36px;height:36px;border-radius:7px;background:var(--error-cont);display:flex;align-items:center;justify-content:center"><span class="mso mso-fill" style="color:var(--error);font-size:20px">warning</span></div><span style="font-size:10px;color:var(--outline)">Oct 24, 2023</span></div>
+<div style="font-size:13px;font-weight:600;color:var(--on-surface)">Q3 Financial Syndicates</div>
+<div style="font-size:11px;color:var(--on-surface-var)">Analysis of organized phishing networks targeting banking infrastructure.</div>
+<div style="display:flex;gap:14px"><div><div style="font-size:10px;color:var(--outline);text-transform:uppercase">Active Cases</div><div style="font-size:16px;font-weight:700;color:var(--gov-blue)">142</div></div><div><div style="font-size:10px;color:var(--outline);text-transform:uppercase">Est. Impact</div><div style="font-size:16px;font-weight:700;color:#b7102a">₹4,50,000</div></div></div>
+<button onclick="showToast('Downloading PDF...')" style="display:flex;align-items:center;justify-content:center;gap:5px;padding:7px;border:1px solid var(--gov-blue);color:var(--gov-blue);border-radius:7px;font-size:11px;font-weight:600;background:var(--card-bg);cursor:pointer;font-family:inherit;transition:all .2s"><span class="mso" style="font-size:15px">picture_as_pdf</span>Download PDF</button>
+</div>
+<div class="card" style="cursor:pointer;display:flex;flex-direction:column;gap:9px">
+<div style="display:flex;justify-content:space-between"><div style="width:36px;height:36px;border-radius:7px;background:rgba(107,254,156,.15);display:flex;align-items:center;justify-content:center"><span class="mso mso-fill" style="color:#00984e;font-size:20px">security</span></div><span style="font-size:10px;color:var(--outline)">Oct 18, 2023</span></div>
+<div style="font-size:13px;font-weight:600;color:var(--on-surface)">Ransomware Vectors</div>
+<div style="font-size:11px;color:var(--on-surface-var)">Emerging attack patterns on municipal databases in the northern district.</div>
+<div style="display:flex;gap:14px"><div><div style="font-size:10px;color:var(--outline);text-transform:uppercase">Incidents</div><div style="font-size:16px;font-weight:700;color:var(--gov-blue)">28</div></div><div><div style="font-size:10px;color:var(--outline);text-transform:uppercase">Data Risk</div><div style="font-size:16px;font-weight:700;color:#00984e">High</div></div></div>
+<button onclick="showToast('Downloading PDF...')" style="display:flex;align-items:center;justify-content:center;gap:5px;padding:7px;border:1px solid var(--gov-blue);color:var(--gov-blue);border-radius:7px;font-size:11px;font-weight:600;background:var(--card-bg);cursor:pointer;font-family:inherit;transition:all .2s"><span class="mso" style="font-size:15px">picture_as_pdf</span>Download PDF</button>
+</div>
+<div style="background:var(--bg-low);border:2px dashed var(--outline-var);border-radius:10px;padding:20px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center">
+<span class="mso" style="font-size:36px;color:var(--outline-var)">find_in_page</span>
+<div style="font-size:12px;font-weight:600;color:var(--on-surface)">No more reports</div>
+<div style="font-size:11px;color:var(--on-surface-var)">Try adjusting filters or date range.</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+<div id="toast" style="position:fixed;bottom:14px;right:14px;background:var(--gov-blue);color:white;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:500;box-shadow:0 4px 16px rgba(0,0,0,.25);z-index:999;display:none;align-items:center;gap:7px;max-width:240px">
+<span class="mso mso-fill" style="font-size:16px;color:#6bfe9c">check_circle</span>
+<span id="toast-msg"></span>
+</div>
+
+<script>
+const titles={dashboard:'SafeGuard AI — Dashboard',currency:'Counterfeit Currency',scam:'Scam Detector',fraud:'Fraud Network Map',shield:'Citizen Shield',intel:'Intelligence Reports',settings:'Settings'};
+let currentTheme='light';
+
+function navigate(id){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+document.getElementById('page-'+id).classList.add('active');
+const nav=document.getElementById('nav-'+id);
+if(nav)nav.classList.add('active');
+document.getElementById('topbar-title').textContent=titles[id]||'SafeGuard AI';
+document.getElementById('content-area').scrollTop=0;
+}
+
+function setTheme(mode){
+currentTheme=mode;
+const app=document.getElementById('app');
+if(mode==='dark'){app.classList.add('dark')}
+else if(mode==='light'){app.classList.remove('dark')}
+else{
+const prefersDark=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
+prefersDark?app.classList.add('dark'):app.classList.remove('dark');
+}
+// Update topbar switcher
+['light','dark','system'].forEach(m=>{
+const tb=document.getElementById('tb-'+m);
+const st=document.getElementById('st-'+m);
+const pv=document.getElementById('prev-'+m);
+if(tb){tb.classList.toggle('active',m===mode)}
+if(st){st.classList.toggle('active',m===mode)}
+if(pv){pv.classList.toggle('selected',m===mode)}
+});
+const label={light:'Light mode on',dark:'Dark mode on',system:'Auto mode — follows system'}[mode];
+showToast(label);
+}
+
+function selectDenom(el){
+el.parentElement.querySelectorAll('div').forEach(b=>{
+b.style.borderColor='var(--outline-var)';b.style.background='var(--card-bg)';b.style.color='var(--on-surface-var)';
+});
+el.style.borderColor='#b7102a';el.style.background='rgba(183,16,42,.06)';el.style.color='#b7102a';
+}
+
+function sendMsg(preset){
+const input=document.getElementById('chat-input');
+const msg=preset||input.value.trim();
+if(!msg)return;
+const chat=document.getElementById('chat-messages');
+const isShield=document.getElementById('page-shield').classList.contains('active');
+if(!isShield){showToast('Message: '+msg);return;}
+const ud=document.createElement('div');
+ud.style.cssText='display:flex;gap:8px;flex-direction:row-reverse;animation:fadeIn .2s ease';
+ud.innerHTML=`<div style="width:28px;height:28px;border-radius:50%;background:var(--bg-high);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span class="mso" style="font-size:15px;color:var(--on-surface-var)">person</span></div><div style="display:flex;flex-direction:column;align-items:flex-end"><div style="font-size:10px;color:var(--outline);margin-bottom:2px">You • just now</div><div style="background:#b7102a;color:white;padding:9px 11px;border-radius:13px 13px 2px 13px;font-size:12px;line-height:1.5">${msg}</div></div>`;
+chat.insertBefore(ud,chat.children[chat.children.length-3]);
+input.value='';
+setTimeout(()=>{
+const bd=document.createElement('div');
+bd.style.cssText='display:flex;gap:8px;animation:fadeIn .2s ease';
+bd.innerHTML=`<div style="width:28px;height:28px;border-radius:50%;background:var(--gov-blue);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span class="mso mso-fill" style="font-size:13px;color:white">security</span></div><div><div style="font-size:10px;color:var(--outline);margin-bottom:2px">SafeGuard AI • just now</div><div style="background:var(--gov-blue);color:white;padding:9px 11px;border-radius:13px 13px 13px 2px;font-size:12px;line-height:1.5;max-width:85%">Thank you. If you believe you are in danger, call 1930 immediately.</div></div>`;
+chat.insertBefore(bd,chat.children[chat.children.length-3]);
+},700);
+}
+
+let toastTimer;
+function showToast(msg){
+const t=document.getElementById('toast'),m=document.getElementById('toast-msg');
+m.textContent=msg;t.style.display='flex';
+clearTimeout(toastTimer);toastTimer=setTimeout(()=>{t.style.display='none';},2600);
+}
+
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',e=>{
+if(currentTheme==='system'){e.matches?document.getElementById('app').classList.add('dark'):document.getElementById('app').classList.remove('dark');}
+});
+</script>
+</body>
+</html>
